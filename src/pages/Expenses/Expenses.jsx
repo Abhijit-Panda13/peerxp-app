@@ -1,7 +1,10 @@
 import React, {useMemo} from 'react';
 import Signup from '../Login/Signup';
-import Table, {SelectColumnFilter} from '../../components/Table/Table'
+import Table, {SelectColumnFilter, StatusPill, AvatarCell, formatDate} from '../../components/Table/Table'
 import getData from '../../resources/dummy'
+import Modal from "../../components/Modal/Modal";
+import "./Expenses.css"
+
 
 
 function setToken(userToken) {
@@ -21,31 +24,49 @@ export default function Expenses() {
         {
           Header: "Name",
           accessor: "name",
-          Filter: SelectColumnFilter,
-          filter: 'includes', 
+          Cell: AvatarCell,
+          imgAccessor: "imgUrl",
+          emailAccessor: "email",
+
         },
         {
-          Header: "Title",
-          accessor: "title",
-          Filter: SelectColumnFilter,
-          filter: 'includes',
-        },
-        {
-          Header: "Status",
-          accessor: "status",
+          Header: "Category",
+          accessor: "category",
           Filter: SelectColumnFilter,
           filter: 'includes',
         },
         {
-          Header: "Role",
-          accessor: "role",
+          Header: "Date of Expense",
+          accessor: "dateofexp",
+          Filter: SelectColumnFilter,
+          filter: (rows, id, filterValue) =>
+              rows.filter((row) => {
+                console.log(filterValue.startDate)
+                return row.values.dateofexp >= filterValue.startDate && row.values.dateofexp <= filterValue.endDate
+              })
+        },
+        {
+          Header: "Amount",
+          accessor: "amount",
           Filter: SelectColumnFilter,
           filter: 'includes',
         },
         {
-          Header: "Age",
-          accessor: 'age',
-        }
+          Header: "Updated At",
+          accessor: "updatedat",
+          Filter: SelectColumnFilter,
+          filter: 'includes',
+        },
+        {
+          Header: "Created By",
+          accessor: "createdby",
+          Filter: SelectColumnFilter,
+          filter: 'includes',
+        },
+        {
+          Header: "Actions",
+          accessor: "action",
+        },
       ],
       []
     );
@@ -59,10 +80,10 @@ export default function Expenses() {
     
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div className="">
-          <h1 className="text-xl font-semibold">React Table + Tailwind CSS = ❤</h1>
-        </div>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <div className="modal flex flex-col items-center justify-center">
+        <Modal />
+      </div>
         <div className="mt-4">
           <Table columns={columns} data={data} />
         </div>
