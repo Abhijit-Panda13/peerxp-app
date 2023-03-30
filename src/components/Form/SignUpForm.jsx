@@ -30,7 +30,7 @@ export default function SignUpForm(){
           const user = userCredential.user;
           console.log(user);
           setToken(user);
-          navigate("/dashboard")
+          navigate("/expenses")
           // ...
       })
       .catch((error) => {

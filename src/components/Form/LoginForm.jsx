@@ -30,7 +30,7 @@ export default function Login(){
             // Signed in
             const user = userCredential.user;
             setToken(user);
-            navigate("/dashboard")
+            navigate("/expenses")
             console.log(user);
         })
         .catch((error) => {
