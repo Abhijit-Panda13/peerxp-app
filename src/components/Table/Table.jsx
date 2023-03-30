@@ -5,7 +5,10 @@ import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDouble
 import { Button, PageButton } from './shared/Button'
 import classNames from 'classnames';
 import Datepicker from "react-tailwindcss-datepicker"; 
-
+import { FaEdit } from 'react-icons/fa';
+import "./Table.css"
+import { MdDelete } from 'react-icons/md';
+import { getDatabase, ref, remove } from "firebase/database";
 
 export function AvatarCell({ value, column, row }) {
     return (
@@ -185,10 +188,23 @@ function Table({ columns, data }) {
         useSortBy,
         usePagination
     );
-
+    const[probDel, setProbDel] = useState(null)
+    const[showDelModal, setShowDelModal] = useState(null);
     const email = JSON.parse(localStorage.getItem("token")).email;
-
-
+    const handleDelete = (e)=>{
+        setProbDel(e.target.id);
+        setShowDelModal(true);
+    }
+    const handleConfirm = ()=>{
+        const db = getDatabase();
+        remove(ref(db, 'expenses/' + probDel))
+        .then(() => {
+         window.location.reload();
+        })
+        .catch((error) => {
+        alert("Failed")
+        });
+    }
 
   // Render the UI for your table
   return (
@@ -199,7 +215,44 @@ function Table({ columns, data }) {
         globalFilter={state.globalFilter}
         setGlobalFilter={setGlobalFilter}
       />
-    
+       {showDelModal ? (
+        <>
+          <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="modalcss relative w-auto my-6 mx-auto max-w-3xl">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
+                  <h3 className="text-3xl font=semibold">Delete Expense</h3>
+                  <button
+                    className="bg-transparent border-0 text-black float-right"
+                    onClick={() => setShowDelModal(false)}
+                  >
+                    <span className="text-black opacity-7 h-8 w-8 text-xl block bg-gray-400 py-0 rounded-full">
+                      x
+                    </span>
+                  </button>
+                </div>
+                
+                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                  <button
+                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+                    type="button"
+                    onClick={() => setShowDelModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="text-white bg-yellow-500 active:bg-yellow-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                    type="button"
+                    onClick={handleConfirm}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
       {headerGroups.map((headerGroup) =>
         headerGroup.headers.map((column) =>
           column.Filter ? (
@@ -250,7 +303,7 @@ function Table({ columns, data }) {
                     return (
                       <tr {...row.getRowProps()}>
                         {row.cells.map(cell => {
-                            {/* console.log(cell) */}
+                            {/* console.log(cell)    */}
                           return (
                             <td
                                 {...cell.getCellProps()}
@@ -274,8 +327,9 @@ function Table({ columns, data }) {
                                 }
                                 {cell.value === "action" ? (
                                     <div className="text-sm text-gray-500">
-                                        <Button> EDIT</Button>
-                                        <Button> DELETE</Button>
+                                        <Button className="but"> <FaEdit /></Button>
+                                        
+                                        <Button id ={cell.row.original.uid} onClick={handleDelete}> <MdDelete /></Button>
                                     </div>
                                 ) : (
                                     null

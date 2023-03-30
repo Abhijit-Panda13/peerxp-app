@@ -10,9 +10,10 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const Modal = () => {
     const email = JSON.parse(localStorage.getItem("token")).email;
-
+    
   const [showModal, setShowModal] = useState(false);
   let initObj = {
+    uid: '',
     createdby: email,
     name: '',
     category: '',
@@ -32,7 +33,8 @@ const Modal = () => {
 
     today = yyyy + '-' + mm + '-' + dd;
     console.log(today);
-    setState({ ...state, updatedat: today });
+    // setState({ ...state,  });
+    setState({ ...state, uid: uuid(), updatedat: today})
     setShowModal(true);
   };
 
@@ -55,7 +57,7 @@ const Modal = () => {
     const db = getDatabase();
     const dbRef = ref(db);
     const updates = {};
-        updates['/expenses/' + uuid()] = state;
+        updates['/expenses/' + state.uid] = state;
         return update(ref(db), updates);
   }
 
