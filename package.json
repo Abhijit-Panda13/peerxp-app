@@ -17,6 +17,7 @@
     "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
     "react-tailwindcss-datepicker": "^1.5.1",
+    "react-uuid": "^2.0.0",
     "tw-elements": "^1.0.0-beta1",
     "web-vitals": "^2.1.4"
   },

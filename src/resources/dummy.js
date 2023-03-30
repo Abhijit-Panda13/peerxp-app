@@ -1,15 +1,13 @@
 const getData = () => [
     {
-      name: "Abhijit Panda",
-      category: "Fixed",
-      amount: 27,
-      createdby: "abhijit.panda@gmail.com",
-      action: "action",
-      dateofexp: "2023-03-16",
-      updatedat: "Active",
-      role: "Admin",
-      imgUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        action : "action",
+        amount : "7878",
+        category : "Finance",
+        createdby : "abhijit.panda@gmail.com",
+        dateofexp : "13-09-2002",
+        imgUrl : "https://random.imagecdn.app/500/150",
+        name : "Abhijit",
+        updatedat : "2023-03-30"
     },
     {
       name: "Cody Fisher",

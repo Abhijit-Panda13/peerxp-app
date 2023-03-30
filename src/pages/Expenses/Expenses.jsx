@@ -1,10 +1,11 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import Signup from '../Login/Signup';
 import Table, {SelectColumnFilter, StatusPill, AvatarCell, formatDate} from '../../components/Table/Table'
 import getData from '../../resources/dummy'
 import Modal from "../../components/Modal/Modal";
 import "./Expenses.css"
-
+import { getDatabase, ref,update, get, child } from "firebase/database";
+import { auth } from "../../firebase/firebase";
 
 
 function setToken(userToken) {
@@ -17,7 +18,10 @@ function getToken() {
     const userToken = JSON.parse(tokenString);
     return userToken
 }
+let x = [];
+
 export default function Expenses() {
+    const [data, setData] = useState(null);
     const token = getToken();
     const columns = useMemo(
       () => [
@@ -70,12 +74,40 @@ export default function Expenses() {
       ],
       []
     );
-    const data = useMemo(() => getData(), []);
-    if(!token) {
-        return <Signup setToken={setToken} />
-    }
+    // console.log(getdata());
+    console.log(getData());
+    // const data = useMemo(() => getData(), []);
+   
 
     
+    useEffect(() =>{
+      async function getdata() {
+        const db = getDatabase();
+        const dbRef = ref(db);
+        await get(child(dbRef, `expenses/`)).then((snapshot) => {
+          if (snapshot.exists()) {
+            // console.log(snapshot.val());
+            const datax = Object.values(snapshot.val());
+            console.log(datax);
+            // x = datax;
+            setData(datax);
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+      
+      if(!data){
+        getdata();
+      }
+      
+    })
+    // console.log("x", x);
+    if(!token) {
+      return <Signup setToken={setToken} />
+  }
 
     
   return (
@@ -85,7 +117,9 @@ export default function Expenses() {
         <Modal />
       </div>
         <div className="mt-4">
-          <Table columns={columns} data={data} />
+          {
+            data ? <Table columns={columns} data={data} /> : <div>Hello</div>
+          }
         </div>
       </main>
     </div>

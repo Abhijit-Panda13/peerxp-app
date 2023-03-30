@@ -1,15 +1,77 @@
 import React, { useState } from "react";
 import "./Modal.css"
+import { getDatabase, ref,update, get, child } from "firebase/database";
+import { auth } from "../../firebase/firebase";
+import uuid from 'react-uuid';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+
 
 const Modal = () => {
+    const email = JSON.parse(localStorage.getItem("token")).email;
+
   const [showModal, setShowModal] = useState(false);
+  let initObj = {
+    createdby: email,
+    name: '',
+    category: '',
+    amount: 0,
+    dateofexp: new Date(),
+    updatedat: '',
+    action: "action",
+    imgUrl:
+        "https://random.imagecdn.app/500/150"
+  }
+  const [state, setState] = useState(initObj);
+  const onChangeUpdatedAt = () => {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    console.log(today);
+    setState({ ...state, updatedat: today });
+    setShowModal(true);
+  };
+
+  const onChangeName = (e) => {
+    setState({ ...state, name: e.target.value });
+  };
+  const onChangeCategory = (e) => {
+    setState({ ...state, category: e.target.value });
+  };
+  const onChangeAmount = (e) => {
+    setState({ ...state, amount: e.target.value });
+  };
+  
+  const handleDateChange = (e) => {
+    // console.log(e);
+    setState({ ...state, dateofexp: e });
+  };
+
+  const updateData = () => {
+    const db = getDatabase();
+    const dbRef = ref(db);
+    const updates = {};
+        updates['/expenses/' + uuid()] = state;
+        return update(ref(db), updates);
+  }
+
+  const handleSubmit = async() => {
+    console.log(state);
+    await updateData();
+    window.location.reload();
+  }
+  
   return (
     <>
       <button
         className="bg-blue-200 text-black active:bg-blue-500 
       font-bold px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
         type="button"
-        onClick={() => setShowModal(true)}
+        onClick={onChangeUpdatedAt}
       >
         ADD Entry
       </button>
@@ -34,20 +96,20 @@ const Modal = () => {
                     <label className="block text-black text-sm font-bold mb-1">
                       Name
                     </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
+                    <input onChange = {onChangeName} className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
                     <label className="block text-black text-sm font-bold mb-1">
                       Category
                     </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
+                    <input onChange = {onChangeCategory} className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
                     <label className="block text-black text-sm font-bold mb-1">
                       Date of Expense
                     </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
+                    <DatePicker selected={state.dateofexp} onChange={handleDateChange} />
                     <label className="block text-black text-sm font-bold mb-1">
                       Amount
                     </label>
 
-                    <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
+                    <input onChange = {onChangeAmount} className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
                   </form>
                 </div>
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -61,7 +123,7 @@ const Modal = () => {
                   <button
                     className="text-white bg-yellow-500 active:bg-yellow-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={handleSubmit}
                   >
                     Submit
                   </button>

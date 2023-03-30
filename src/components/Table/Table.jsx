@@ -27,8 +27,8 @@ export function AvatarCell({ value, column, row }) {
     );
   }
 
-export function formatDate() {
-    var d = new Date(),
+export function formatDate(date) {
+    var d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -250,14 +250,14 @@ function Table({ columns, data }) {
                     return (
                       <tr {...row.getRowProps()}>
                         {row.cells.map(cell => {
-                            {/* console.log(cell.value) */}
+                            {/* console.log(cell) */}
                           return (
                             <td
                                 {...cell.getCellProps()}
                                 className="px-6 py-4 whitespace-nowrap"
                                 role="cell"
                                 >
-                                {cell.column.Cell.name === "defaultRenderer" && cell.value !== email && cell.value !== "action" ? (
+                                {cell.column.Cell.name === "defaultRenderer" && cell.value !== email && cell.value !== "action" && cell.column.id!=="dateofexp"? (
                                     <div className="text-sm text-gray-500">{cell.render("Cell")}</div>
                                 ) : (
                                     null
@@ -267,6 +267,11 @@ function Table({ columns, data }) {
                                 ) : (
                                     null
                                 )}
+                                {cell.column.id === "dateofexp"?
+                                    (<div>{formatDate(cell.value)}</div>)
+                                    :
+                                    null
+                                }
                                 {cell.value === "action" ? (
                                     <div className="text-sm text-gray-500">
                                         <Button> EDIT</Button>
