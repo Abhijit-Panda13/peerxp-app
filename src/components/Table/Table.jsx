@@ -65,7 +65,7 @@ export function SelectColumnFilter({
       const options = new Set();
     //   console.log(preFilteredRows);
       preFilteredRows.forEach((row) => {
-        id !== "createdby" ? options.add(row.values[id]) : options.add("me");
+        options.add(row.values[id]);
       });
       return [...options.values()];
     }, [id, preFilteredRows]);

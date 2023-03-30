@@ -1,5 +1,6 @@
 .modal{
+    width: 200px !important;
     position: relative !important;
-    left: 650px;
-    top: 60px;
+    left: 1100px;
+    top: 40px;
 }
