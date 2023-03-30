@@ -334,7 +334,7 @@ function Table({ columns, data }) {
                                 ) : (
                                     null
                                 )}
-                                {cell.column.Cell.name !== "defaultRenderer" && cell.value !== email ? (
+                                {cell.column.Cell.name !== "defaultRenderer" && cell.value !== email && cell.value !== "action" && cell.column.id!=="dateofexp" ? (
                                     cell.render("Cell")
                                 ) : (
                                     null
